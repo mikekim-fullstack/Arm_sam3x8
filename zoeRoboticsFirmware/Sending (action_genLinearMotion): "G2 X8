@@ -1,0 +1,4 @@
+Sending (action_genLinearMotion): "G2 X889.149 Y943.000 Z-222.584 T-354.980 V-1.571 A150.000 J141 N1\n" , selected Mode: 16
+Received data from Client: J141 N1 G2 M30 W889.149 X943.000 Y-222.584 Z-354.980 V-1.571 A150.000
+Received data from Client: J141 N2 G0 M30
+Received data from Client: J141 N0 G12 M20

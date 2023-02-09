@@ -1,0 +1,158 @@
+TARGET=CORTEXM3
+
+
+ifeq ($(TARGET), CORTEXM3)
+## USB PORT
+PORT = cu.usbmodem14301
+
+## DEFINT WORKING DIRECTORY
+WORKING_DIR = /Users/mikekim/Developer/ArduinoDue
+# MAIN_FILE = test_SAM3X_main
+# MAIN_FILE = mkSerial
+MAIN_FILE = mkZoeRobotics_main
+
+
+## DEFAULT SAM3X LIBRARY INFO.
+//LIB_DIR = /Users/mikekim/Developer/ArduinoDue 
+LIB_DIR =/Users/mikekim/Developer/ArduinoDue/arduino_build
+CPP = arm-none-eabi-g++
+FLAGS = -c -g -Os -w   -std=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single=500 -fno-rtti -fno-exceptions
+OPTS = -MMD -mcpu=cortex-m3 -mthumb -DF_CPU=84000000L -DARDUINO=10813 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON "-DUSB_MANUFACTURER=\"Arduino LLC\"" "-DUSB_PRODUCT=\"Arduino Due\""
+INC_LIBS = -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/libsam 
+INC_LIBS += -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/CMSIS/CMSIS/Include/ 
+INC_LIBS += -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/CMSIS/Device/ATMEL/ 
+INC_LIBS += -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/cores/arduino
+INC_LIBS += -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x
+INC_LIBS += -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/libsam/include
+
+
+## LINKING OPTION'S DEFINITION
+LINK = arm-none-eabi-gcc
+LINK_COPY = arm-none-eabi-objcopy
+LINK_SIZING = arm-none-eabi-size
+
+LINK_OPTS1 = -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections -T${LIB_DIR}/flash.ld -Wl,-Map,${WORKING_DIR}/${MAIN_FILE}.map 
+LINK_OPTS2 = -L${LIB_DIR} -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u #link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid
+LINK_OPT_END =  ${LIB_DIR}/libchip_sam3x8_gcc_rel.a ${LIB_DIR}/libchip_sam3x8_gcc_dbg.a -Wl,--end-group -lm -lgcc
+# INC_MK = -I/mkSerial.h -I-mkZoeRobotics.h -I/mkZoeRobotics_include.h  -I/mkZoeRobotics_config.h -I/mega2569_io.h -I/mkTimer0.h
+
+## FLASHING ELF FILE TO ARDUINO DUE BOARD
+FLASH = /Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac
+
+# /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections -T/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.map -o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf -L/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801 -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/add.c.o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/test_blink.ino.cpp.o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/core/variant.cpp.o /Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/../arduino_cache_680834/core/core_arduino_sam_arduino_due_x_dbg_cb50ec42445921f1ff31623a6f3e9f94.a -Wl,--end-group -lm -lgcc
+
+# /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc 
+# -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections 
+# -T/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,
+# -Map,/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.map 
+# -o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf 
+# -L/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801 
+# -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,
+# --warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid 
+# /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/add.c.o 
+# /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/test_blink.ino.cpp.o 
+# /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/core/variant.cpp.o 
+# /Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a 
+# /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/../arduino_cache_680834/core/core_arduino_sam_arduino_due_x_dbg_cb50ec42445921f1ff31623a6f3e9f94.a 
+# -Wl,--end-group -lm -lgcc
+
+ # -O binary /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.bin
+# /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-size -A /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf
+#/Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac -i -d --port=cu.usbmodem1431 -U false -e -w -v -b /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.bin -R 
+# /Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac -i -d --port=cu.usbmodem1431 -U false -e -w -v -b test_SAM3X_main.bin -R 
+blink:
+	 ${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  mkZoeRobotics_serial.cpp ${MAIN_FILE}.c
+	#${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  ${MAIN_FILE}.c
+	# ${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  $(INC_MK) mkSerial.cpp 
+	# ${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  $(INC_MK) mkStepperMotor.c 
+
+	 ${LINK} ${LINK_OPTS1} -o  ${MAIN_FILE}.elf mkZoeRobotics_serial.o ${MAIN_FILE}.o ${LINK_OPT_END}
+	#  ${LINK} ${LINK_OPTS1} -o  ${MAIN_FILE}.elf ${LINK_OPTS2} mkZoeRobotics_serial.o ${MAIN_FILE}.o ${LINK_OPT_END}
+	# ${LINK} ${LINK_OPTS1} -o  ${MAIN_FILE}.elf ${LINK_OPTS2}  ${MAIN_FILE}.o ${LINK_OPT_END}
+
+	${LINK_COPY} -O binary ${MAIN_FILE}.elf ${MAIN_FILE}.bin
+	${LINK_SIZING} -A ${MAIN_FILE}.elf
+	
+#${FLASH} -i -d --port=${PORT} -U false -e -w -v -b ${MAIN_FILE}.bin -R 
+	
+flash_blink:
+	${FLASH} -i -d --port=${PORT} -U false -e -w -v -b ${MAIN_FILE}.bin -R 
+clear:
+	rm -f *.bin *.hex *.elf *.map *.d *.o
+endif
+
+# TARGET=CORTEXM3
+
+
+# ifeq ($(TARGET), CORTEXM3)
+# ## USB PORT
+# PORT = cu.usbmodem1431
+
+# ## DEFINT WORKING DIRECTORY
+# WORKING_DIR = /Users/mikekim/Developer/ArduinoDue
+# MAIN_FILE = test_SAM3X_main
+
+
+# ## DEFAULT SAM3X LIBRARY INFO.
+# LIB_DIR = /Users/mikekim/Developer/ArduinoDue/Atmel-sam3x-libs/libchip_sam3x/lib
+# INC_DIR = /Users/mikekim/Developer/ArduinoDue/Atmel-sam3x-libs/libchip_sam3x/Include
+# #FLASH_LD = /Users/mikekim/Developer/ArduinoDue/Atmel-sam3x-libs/libboard_sam3x-ek/resources/gcc/sam3x8
+# FLASH_LD = /Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/linker_scripts/gcc
+# CPP = arm-none-eabi-g++
+# FLAGS = -c -g -Os -w   -std=gnu++11 -ffunction-sections -fdata-sections -nostdlib -fno-threadsafe-statics --param max-inline-insns-single=500 -fno-rtti -fno-exceptions
+# OPTS = -MMD -mcpu=cortex-m3 -mthumb -DF_CPU=84000000L -DARDUINO=10813 -DARDUINO_SAM_DUE -DARDUINO_ARCH_SAM -D__SAM3X8E__ -mthumb -DUSB_VID=0x2341 -DUSB_PID=0x003e -DUSBCON "-DUSB_MANUFACTURER=\"Arduino LLC\"" "-DUSB_PRODUCT=\"Arduino Due\""
+# # INC_LIBS = -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/libsam -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/CMSIS/CMSIS/Include/ -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/system/CMSIS/Device/ATMEL/ -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/cores/arduino -I/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x
+# INC_LIBS = -I${INC_DIR}
+
+# ## LINKING OPTION'S DEFINITION
+# LINK = arm-none-eabi-gcc
+# LINK_COPY = arm-none-eabi-objcopy
+# LINK_SIZING = arm-none-eabi-size
+
+# LINK_OPTS1 = -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections -T${FLASH_LD}/flash.ld -Wl,-Map,${WORKING_DIR}/${MAIN_FILE}.map 
+# LINK_OPTS2 = -L${LIB_DIR} -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid
+# # LINK_OPT_END =  ${LIB_DIR}/libchip_sam3x8_gcc_rel.a ${LIB_DIR}/libchip_sam3x8_gcc_dbg.a -Wl,--end-group -lm -lgcc
+# LINK_OPT_END =  ${LIB_DIR}/libchip_sam3x8_gcc_rel.a ${LIB_DIR}/libchip_sam3x8_gcc_dbg.a -Wl,--end-group -lm -lgcc
+# INC_MK = -I/mkSerial.h -I-mkZoeRobotics.h -I/mkZoeRobotics_include.h  -I/mkZoeRobotics_config.h -I/mega2569_io.h -I/mkTimer0.h
+
+# ## FLASHING ELF FILE TO ARDUINO DUE BOARD
+# FLASH = /Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac
+
+# # /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections -T/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,-Map,/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.map -o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf -L/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801 -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/add.c.o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/test_blink.ino.cpp.o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/core/variant.cpp.o /Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/../arduino_cache_680834/core/core_arduino_sam_arduino_due_x_dbg_cb50ec42445921f1ff31623a6f3e9f94.a -Wl,--end-group -lm -lgcc
+
+# # /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-gcc 
+# # -mcpu=cortex-m3 -mthumb -Os -Wl,--gc-sections 
+# # -T/Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/linker_scripts/gcc/flash.ld -Wl,
+# # -Map,/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.map 
+# # -o /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf 
+# # -L/var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801 
+# # -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,
+# # --warn-common -Wl,--warn-section-align -Wl,--start-group -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid 
+# # /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/add.c.o 
+# # /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/sketch/test_blink.ino.cpp.o 
+# # /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/core/variant.cpp.o 
+# # /Users/mikekim/Library/Arduino15/packages/arduino/hardware/sam/1.6.12/variants/arduino_due_x/libsam_sam3x8e_gcc_rel.a 
+# # /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/../arduino_cache_680834/core/core_arduino_sam_arduino_due_x_dbg_cb50ec42445921f1ff31623a6f3e9f94.a 
+# # -Wl,--end-group -lm -lgcc
+
+#  # -O binary /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.bin
+# # /Users/mikekim/Library/Arduino15/packages/arduino/tools/arm-none-eabi-gcc/4.8.3-2014q1/bin/arm-none-eabi-size -A /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.elf
+# #/Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac -i -d --port=cu.usbmodem1431 -U false -e -w -v -b /var/folders/6l/mgykyzys4hx5jfllylfkxd8w0000gn/T/arduino_build_836801/test_blink.ino.bin -R 
+# # /Users/mikekim/Library/Arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac -i -d --port=cu.usbmodem1431 -U false -e -w -v -b test_SAM3X_main.bin -R 
+# blink:
+# 	${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  ${MAIN_FILE}.cpp  
+# 	# ${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  $(INC_MK) mkSerial.cpp 
+# 	# ${CPP} $(FLAGS) $(OPTS) $(INC_LIBS)  $(INC_MK) mkStepperMotor.c 
+
+# 	${LINK} ${LINK_OPTS1} -o ${MAIN_FILE}.elf ${LINK_OPTS2} ${MAIN_FILE}.o ${LINK_OPT_END}
+# 	${LINK_COPY} -O binary ${MAIN_FILE}.elf ${MAIN_FILE}.bin
+# 	${LINK_SIZING} -A ${MAIN_FILE}.elf
+	
+# #${FLASH} -i -d --port=${PORT} -U false -e -w -v -b ${MAIN_FILE}.bin -R 
+	
+# flash_blink:
+# 	${FLASH} -i -d --port=${PORT} -U false -e -w -v -b ${MAIN_FILE}.bin -R 
+# clear:
+# 	rm -f *.bin *.hex *.elf *.map *.d
+# endif
+

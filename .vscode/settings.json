@@ -1,0 +1,15 @@
+{
+   "files.associations": {
+      "memory": "cpp",
+      "random": "cpp",
+      "optional": "cpp",
+      "*.tcc": "cpp",
+      "string_view": "cpp",
+      "tuple": "cpp",
+      "type_traits": "cpp",
+      "limits": "cpp"
+   },
+   "C_Cpp.clang_format_fallbackStyle": "\"{ BasedOnStyle: Google, IndentWidth: 4 }\"",
+   "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, AlignConsecutiveDeclarations: true }",
+       
+}
